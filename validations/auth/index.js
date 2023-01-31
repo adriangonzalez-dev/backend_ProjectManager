@@ -1,7 +1,13 @@
 const {registerValidator} = require('./registerValidator');
-const {loginValidator} = require('./loginValidator')
+const {loginValidator} = require('./loginValidator');
+const {emailValidator} = require('./emailValidator');
+const {tokenValidator} = require('./tokenValidator');
+const { passValidator } = require('./passValidator');
 
 module.exports = {
     registerValidator,
-    loginValidator
+    loginValidator,
+    emailValidator,
+    tokenValidator,
+    passValidator
 }

@@ -1,7 +1,7 @@
 const { request, response } = require("express");
 const createError = require('http-errors');
 const User = require('../models/User');
-const { randomTokenGenerator } = require("../helpers");
+const { randomTokenGenerator, jwtGenerator, mailConfirmRegister, forgetPassword } = require("../helpers");
 
 module.exports = {
     register: async (req = request,res = response) => {
@@ -18,6 +18,12 @@ module.exports = {
             user.token = randomTokenGenerator();
 
             await user.save();
+        
+            await mailConfirmRegister({
+                name: user.name,
+                email: user.email,
+                token: user.token
+            })
 
             return res.status(201).json({
                 ok: true,
@@ -61,7 +67,12 @@ module.exports = {
 
             return res.status(201).json({
                 ok: true,
-                msg: 'Usuario logged'
+                msg: 'User logged',
+                user: {
+                    name: user.name,
+                    email: user.email,
+                    token: jwtGenerator({id: user._id})
+                }
             })
         } catch (error) {
             console.log(error)
@@ -72,7 +83,22 @@ module.exports = {
         }
     },
     checked: async (req = request,res = response) => {
+        const {token} = req.query
         try {
+            const user = await User.findOne({token});
+
+            if(!user){
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'Token invalido'
+                });
+            }
+
+            user.checked = true;
+            user.token = '';
+
+            await user.save();
+
             return res.status(201).json({
                 ok: true,
                 msg: 'Usuario checked'
@@ -86,11 +112,33 @@ module.exports = {
         }
     },
     sendToken: async (req = request,res = response) => {
+        const {email } = req.body;
+
         try {
+            const user = await User.findOne({email});
+
+            if(!user){
+                return res.status(400).json({
+                    msg: 'Email incorrecto'
+                });
+            }
+
+            user.token = randomTokenGenerator();
+            user.save();
+
+            //Enviar email para cambio de clave
+            await forgetPassword({
+                name: user.name,
+                email: user.email,
+                token: user.token
+            })
+
             return res.status(201).json({
                 ok: true,
-                msg: 'send token ok'
+                msg: `Se ha enviado un correo a ${email}`
             })
+
+
         } catch (error) {
             console.log(error)
             return res.status(error.status || 500).json({
@@ -100,7 +148,16 @@ module.exports = {
         }
     },
     verify: async (req = request,res = response) => {
+        const {token} = req.query;
         try {
+            const user = await User.findOne({token});
+
+            if(!user) {
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'Token inválido'
+                })
+            }
             return res.status(201).json({
                 ok: true,
                 msg: 'token ok'
@@ -114,11 +171,24 @@ module.exports = {
         }
     },
     changePassword: async (req = request,res = response) => {
+        const {token} = req.query;
+        const {password} = req.body;
+        
         try {
+
+            const user = await User.findOne({
+                token
+            });
+
+            user.password = password;
+            user.token = '';
+
+            await user.save();
+
             return res.status(201).json({
                 ok: true,
                 msg: 'password changed ok'
-            })
+            });
         } catch (error) {
             console.log(error)
             return res.status(error.status || 500).json({

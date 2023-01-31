@@ -4,7 +4,7 @@ const router = express.Router();
 const {login,register, checked, sendToken, verify, changePassword} = require('../controllers/authControllers')
 
 //validations
-const {registerValidator, loginValidator} = require('../validations/auth')
+const {registerValidator, loginValidator, tokenValidator, emailValidator, passValidator} = require('../validations/auth')
 
 //middlewares
 const {getErrors} = require('../middlewares')
@@ -12,9 +12,9 @@ const {getErrors} = require('../middlewares')
 router
 .post('/register', registerValidator, getErrors, register)
 .post('/login', loginValidator, getErrors, login)
-.get('/checked',  checked)
-.post('/send', sendToken)
-.get('/change-password', verify)
-.post('/change-password', changePassword)
+.get('/checked', tokenValidator, getErrors, checked)
+.post('/send', emailValidator, getErrors, sendToken)
+.get('/change-password', tokenValidator, getErrors, verify)
+.post('/change-password', passValidator, tokenValidator, getErrors, changePassword)
 
 module.exports = router;
