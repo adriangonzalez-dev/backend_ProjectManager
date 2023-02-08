@@ -1,5 +1,9 @@
-const { getErrors } = require("./getErrors");
+const { getErrors } = require('./getErrors');
+const { checkToken } = require('./checkToken');
+const multer = require('./multer');
 
 module.exports = {
-    getErrors
-}
+  getErrors,
+  checkToken,
+  multer,
+};

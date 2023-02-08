@@ -1,0 +1,6 @@
+{
+    "editor.cursorBlinking": "expand",
+    "editor.linkedEditing": true,
+    "svelte.plugin.html.linkedEditing.enable": false,
+    "editor.guides.bracketPairs": true
+}
