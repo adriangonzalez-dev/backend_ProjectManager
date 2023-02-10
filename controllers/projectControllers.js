@@ -28,7 +28,7 @@ module.exports = {
     const { id } = req.params;
     try {
       const project = await Project.findById(id)
-        .populate(['createdBy', 'collaborators']);
+        .populate(['createdBy', 'collaborators', 'tasks']);
 
       if (!project) {
         return res.status(404).json({

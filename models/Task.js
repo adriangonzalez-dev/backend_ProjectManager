@@ -42,4 +42,4 @@ taskSchema.methods.toJSON = function () {
   return data;
 };
 
-module.exports = model('Project', taskSchema);
+module.exports = model('Task', taskSchema);

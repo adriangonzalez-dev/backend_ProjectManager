@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-empty */
 /* eslint-disable camelcase */
 /* eslint-disable consistent-return */
 /* eslint-disable no-console */
@@ -7,6 +9,7 @@ const { request, response } = require('express');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const cloudinary = require('cloudinary');
 const Uploads = require('../models/Uploads');
+const User = require('../models/User');
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -46,6 +49,25 @@ module.exports = {
       return res.status(200).json({
         ok: 'true',
         images,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async uploadAvatar(req = request, res = response) {
+    try {
+      console.log(req.file);
+      const { public_id, secure_url } = await cloudinary.v2.uploader.upload(req.file.path);
+      const user = await User.findById(req.user._id);
+
+      user.avatar = secure_url;
+      user.id_avatar = public_id;
+
+      await user.save();
+
+      return res.status(201).json({
+        msg: 'avatar ok',
+        user,
       });
     } catch (error) {
       console.log(error);

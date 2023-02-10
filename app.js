@@ -7,7 +7,7 @@ const cors = require('cors');
 const { dbConnection } = require('./database/config');
 
 const {
-  authRoutes, userRoutes, projectRoutes, taskRoutes, uploadRoutes
+  authRoutes, userRoutes, projectRoutes, taskRoutes, uploadRoutes,
 } = require('./routes');
 const { checkToken } = require('./middlewares');
 
@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/project', checkToken, projectRoutes);
-app.use('/task', taskRoutes);
+app.use('/task', checkToken, taskRoutes);
 app.use('/upload', checkToken, uploadRoutes);
 
 // catch 404 and forward to error handler

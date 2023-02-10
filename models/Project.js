@@ -36,6 +36,12 @@ const projectSchema = Schema({
       ref: 'User',
     },
   ],
+  tasks: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Task',
+    },
+  ],
 }, {
   timestamps: true,
 });

@@ -17,7 +17,7 @@ const checkToken = async (req = request, res = response, next) => {
     const token = req.headers.authorization;
     const { id } = verify(token, process.env.JWT_SECRET);
 
-    req.user = await User.findById(id).select('name email');
+    req.user = await User.findById(id).select('name email avatar');
 
     next();
   } catch (error) {

@@ -3,16 +3,26 @@ const express = require('express');
 const router = express.Router();
 
 const {
-  findAll, create, findById, update, projectDelete, changeState,
+  createTask,
+  findAll,
+  findById,
+  deleteTask,
+  changeState,
 } = require('../controllers/taskControllers');
 
-/* Auth routes. */
+// middlewares
+const { getErrors } = require('../middlewares');
+
+// validations
+const { createTaskValidator } = require('../validations/tasks');
+
+/* task routes. */
 router
   .get('/', findAll)
-  .post('/', create)
+  .post('/', createTaskValidator, getErrors, createTask)
   .get('/:id', findById)
-  .put('/:id', update)
-  .delete('/:id', projectDelete)
+/* .put('/:id', update) */
+  .delete('/:id', deleteTask)
   .get('/change-state/:id', changeState);
 
 module.exports = router;

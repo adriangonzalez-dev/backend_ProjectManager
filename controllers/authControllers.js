@@ -77,6 +77,7 @@ module.exports = {
         user: {
           name: user.name,
           email: user.email,
+          avatar: user.avatar,
         },
         token,
       });

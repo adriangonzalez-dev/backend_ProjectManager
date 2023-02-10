@@ -26,6 +26,13 @@ const userSchema = Schema({
     type: Boolean,
     default: false,
   },
+  avatar: {
+    type: String,
+    default: 'https://www.w3schools.com/howto/img_avatar.png',
+  },
+  id_avatar: {
+    type: String,
+  },
 }, {
   timestamps: true,
 });
